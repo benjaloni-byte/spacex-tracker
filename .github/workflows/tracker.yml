@@ -1,0 +1,52 @@
+name: SpaceX Launch Tracker
+
+on:
+  schedule:
+    # Run every 10 minutes
+    - cron: '*/10 * * * *'
+  workflow_dispatch:  # Allows manual trigger from GitHub UI
+
+jobs:
+  check-launches:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      
+      - name: Install dependencies
+        run: pip install requests
+      
+      - name: Run tracker
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+        run: python tracker.py
+      
+      - name: Commit updated seen IDs
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add seen_ids.json || true
+          git diff --quiet && git diff --staged --quiet || git commit -m "Update seen launch IDs [skip ci]"
+          git push || true
+```
+
+4. Scroll down and click **Commit changes**
+5. Click **Commit changes** again in the popup
+
+Now your repo should have:
+```
+your-repo/
+├── .github/
+│   └── workflows/
+│       └── tracker.yml    ← You just created this
+├── README.md
+├── seen_ids.json
+└── tracker.py
