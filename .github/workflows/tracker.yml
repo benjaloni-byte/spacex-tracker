@@ -36,17 +36,3 @@ jobs:
           git add seen_ids.json || true
           git diff --quiet && git diff --staged --quiet || git commit -m "Update seen launch IDs [skip ci]"
           git push || true
-```
-
-4. Scroll down and click **Commit changes**
-5. Click **Commit changes** again in the popup
-
-Now your repo should have:
-```
-your-repo/
-├── .github/
-│   └── workflows/
-│       └── tracker.yml    ← You just created this
-├── README.md
-├── seen_ids.json
-└── tracker.py
