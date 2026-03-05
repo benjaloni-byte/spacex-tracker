@@ -233,14 +233,12 @@ def main():
     # Detect new launches
     new_launches = [l for l in upcoming if l["id"] not in seen]
 
-    if new_launches and not first_run:
+    if new_launches:
         log.info(f"🚀 {len(new_launches)} new launch(es) detected!")
         for launch in new_launches:
             idx = launch_month_index(launch["id"], month_launches)
             log.info(f"  → {launch['name']} (#{idx} this month)")
             send_discord(launch, idx, stats)
-    elif new_launches and first_run:
-        log.info(f"First run — seeding {len(new_launches)} launches without notifying")
     else:
         log.info("No new launches detected")
 
